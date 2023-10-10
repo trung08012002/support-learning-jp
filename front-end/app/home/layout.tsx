@@ -1,4 +1,5 @@
 import NavBar from "@/components/navbar/navbar";
+import SideBar from "@/components/sidebar/sidebar";
 import React from "react"
 
 const HomeLayOut = ({
@@ -7,9 +8,14 @@ const HomeLayOut = ({
     children: React.ReactNode
 }) => {
     return (
-        <section className="h-screen w-full">
+        <section className="h-screen ">
             <NavBar />
-            {children}
+            <main className="flex h-contentHeight w-full">
+                <SideBar />
+                <div>
+                    {children}
+                </div>
+            </main>
         </section>
     )
 };

@@ -1,34 +1,65 @@
-"use client"
+"use client";
 import Link from "next/link";
 
-import React, { ReactElement } from "react"
-import { usePathname } from 'next/navigation';
+import React, { ReactElement, useState } from "react";
+import { usePathname } from "next/navigation";
 
 type NavigationLinkProps = {
-    href: string,
-    icon: ReactElement,
+    href: string;
+    icon: ReactElement;
 
-    name: string
-}
+    name: string;
+};
 const NavigationLink = ({ href, icon, name }: NavigationLinkProps) => {
-
-
     const pathname = usePathname();
-    const isActive = pathname === (href === "/home" ? "/" : href)
+    const isActive = pathname === href;
+    // (href === "/home" ? "/" : href);
+
+
     return (
         <>
-            <button data-tooltip-target="tooltip-bottom"
+            <div
+                className={`relative
+                
+                before:content-[attr(data-tip)]
+before:absolute
+before:px-3
+before:py-2
+before:left-1/2
+before:top-20
 
-                data-te-ripple-init
-                data-te-ripple-color="light" data-tooltip-trigger="hover" data-tooltip-placement="bottom" type="button" >
-                <Link href={href === "/home" ? "/" : href} >
-                    {icon}
+before:w-max before:max-w-xs
+before:-translate-y-full
+before:-translate-x-1/2
+before:bg-gray-500 
+before:text-white
+before:rounded-md
+ before:opacity-0
+before:transition-all
 
+                after:absolute
+                after:left-1/2 after:-bottom-5
+                after:h-0 after:w-0
+                after:-translate-x-1/2 after:border-8
+                after:border-t-gray-500
+                after:border-l-transparent
+                after:border-b-transparent
+                after:border-r-transparent
+                after:opacity-0
+                after:transition-all
+                
+                hover:before:opacity-100
+                hover:after:opacity-100
+                
+    `}
+                data-tip={name}
+            >
+                <Link href={href === "/home" ? "/" : href}>
+                    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon={name} role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"
+                        className={`h-6 w-6  ${isActive ? "fill-blue-500" : ""} hover:fill-blue-500`}>
+                        {icon}
+                    </svg>
                 </Link>
-            </button>
-            <div id="tooltip-bottom" role="tooltip" className="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                {name}
-                <div className="tooltip-arrow" data-popper-arrow></div>
             </div>
         </>
     );

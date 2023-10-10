@@ -14,8 +14,10 @@
     "flowbite": "^1.8.1",
     "flowbite-react": "^0.6.3",
     "next": "latest",
+    "perfect-freehand": "^1.2.0",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "roughjs": "^4.6.4"
   },
   "devDependencies": {
     "@types/node": "latest",
