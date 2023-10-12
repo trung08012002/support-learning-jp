@@ -1,6 +1,7 @@
 import React from "react"
 import AudioPlayer from "./audioPlayer";
 import ItemDefination from "./itemDefination";
+import FixedTranslation from "./fixedTranslation";
 
 export type Example = {
   sentence: string,
@@ -21,8 +22,28 @@ export type Vocabulary = {
   sound: string,
   defination: Defination[],
 };
-
-const VocabularyTab = ({ vocabulary }: { vocabulary: Vocabulary }) => {
+const defination: Defination = {
+  title: "danh từ",
+  meaning: [
+    "trẻ lạc đàu giường",
+    "người lạc đàu giường",
+    "trẻ đi lang thang",
+    "trẻ mất tích",
+  ],
+  note: [],
+  examples: [{
+    sentence: "（迷子）の女の子はすすり泣きしながら名前を言っていた。",
+    meanOfExample: "Cô bé bị lạc đang khóc nấc và ngâm tên mình ra.",
+  }]
+}
+const vocabulary: Vocabulary = {
+  kanji: "迷子",
+  hiragana: "まいご",
+  romanji: "maigo",
+  sound: "https://jpdictionary.com/upload/audios/64e5e1cb3e16c.mp3",
+  defination: [defination]
+}
+const VocabularyTab = ({ text }: { text: string }) => {
   return (
     <div className="flex flex-col">
       <span className="cursor-pointer text-danger text-2xl">{vocabulary.kanji}</span >
@@ -36,7 +57,7 @@ const VocabularyTab = ({ vocabulary }: { vocabulary: Vocabulary }) => {
         } />
       </div>
       {vocabulary.defination.map((def, i) => <ItemDefination key={i} index={i + 1} defination={def} />)}
-      
+      <FixedTranslation kanji={vocabulary.kanji} hiragana={vocabulary.hiragana} meaningsVocab={[]} />
     </div>
   )
 };

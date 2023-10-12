@@ -17,6 +17,7 @@ const config: Config = {
         navbarHeight: "54px",
         contentHeight: `calc( 100vh - 54px)`,
       },
+      backgroundSize: {},
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
@@ -29,6 +30,9 @@ const config: Config = {
         linkSecondary: "#6c757d",
         blueText: "#0d6efd",
         success: "#198754",
+        borderChoosing: "#c6d6ef",
+        borderNomal: "#dee2e6",
+        grayBackground: "#f7f9fb",
       },
     },
   },

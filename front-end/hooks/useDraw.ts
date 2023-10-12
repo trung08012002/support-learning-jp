@@ -6,7 +6,12 @@ const useDraw = (onDraw: ({ ctx, currentPoint, prevPoint }: Draw) => void) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [mouseDown, setMouseDown] = useState(false);
   const prevPoint = useRef<Point | null>(null);
-
+  function elementScale(el: HTMLCanvasElement) {
+    return el.offsetWidth === 0 ? 0 : el.width / el.offsetWidth;
+  }
+  function distance(a: Point, b: Point) {
+    return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+  }
   const handleUndo = () => {
     const ctx = canvasRef.current?.getContext("2d");
     if (!ctx) return;
@@ -22,11 +27,27 @@ const useDraw = (onDraw: ({ ctx, currentPoint, prevPoint }: Draw) => void) => {
 
     const canvas = canvasRef.current;
     if (!canvas) return;
-    ctx.reset();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    for (let i = 0, j = 1; j < firstIndex; i += 2, j += 2) {
-      onDraw({ ctx, currentPoint: tempPoints[j], prevPoint: tempPoints[i] });
+    let i = 0;
+    let j = 1;
+    let z = 0;
+    while (j < firstIndex) {
+      if (
+        (points[i]?.x == fragPoints[z]?.x &&
+          points[i]?.y == fragPoints[z]?.y) ||
+        (points[j]?.x == fragPoints[z]?.x && points[j]?.y == fragPoints[z]?.y)
+      ) {
+        z++;
+        i++;
+        j++;
+      } else {
+        onDraw({ ctx, currentPoint: points[i], prevPoint: points[j] });
+        i += 2;
+        j += 2;
+      }
     }
+
     setPoints(tempPoints);
     setFragPoints(fragPoints);
   };
@@ -34,8 +55,8 @@ const useDraw = (onDraw: ({ ctx, currentPoint, prevPoint }: Draw) => void) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = (e.clientX - rect.left) * (canvas.width / canvas.offsetWidth);
+    const y = (e.clientY - rect.top) * (canvas.height / canvas.offsetHeight);
     return { x, y };
   };
   const clear = () => {
@@ -43,17 +64,21 @@ const useDraw = (onDraw: ({ ctx, currentPoint, prevPoint }: Draw) => void) => {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+    fragPoints.length = 0;
+    points.length = 0;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.save();
   };
   useEffect(() => {
     const onMouseDown = (e: MouseEvent) => {
       setMouseDown(true);
-      const currentPoint = computePointInCanvas(e);
+      const currentPoint: Point = computePointInCanvas(e) as Point;
       if (currentPoint) {
         points.push(currentPoint);
         fragPoints.push(currentPoint);
       }
+      const ctx = canvasRef.current?.getContext("2d");
+      if (!ctx || currentPoint) return;
+      onDraw({ ctx, currentPoint: currentPoint, prevPoint: prevPoint.current });
     };
     const hanldeMouseMove = (e: MouseEvent) => {
       if (!mouseDown) return;
@@ -71,12 +96,16 @@ const useDraw = (onDraw: ({ ctx, currentPoint, prevPoint }: Draw) => void) => {
     const handleMouseUp = (e: MouseEvent) => {
       setMouseDown(false);
 
-      if (prevPoint.current) {
-        points.push(prevPoint.current);
+      const ctx = canvasRef.current?.getContext("2d");
+      if (!ctx || !prevPoint.current) return;
+      points.push(prevPoint.current);
 
-        fragPoints.push(prevPoint.current);
-      }
-
+      fragPoints.push(prevPoint.current);
+      onDraw({
+        ctx,
+        currentPoint: prevPoint.current!,
+        prevPoint: prevPoint.current,
+      });
       prevPoint.current = null;
     };
 
@@ -89,7 +118,7 @@ const useDraw = (onDraw: ({ ctx, currentPoint, prevPoint }: Draw) => void) => {
       window.removeEventListener("mouseup", handleMouseUp);
     };
   }, [onDraw]);
-  return { canvasRef, clear, handleUndo };
+  return { canvasRef, clear, handleUndo, elementScale, distance };
 };
 
 export default useDraw;

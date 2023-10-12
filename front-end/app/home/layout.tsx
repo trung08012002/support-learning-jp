@@ -12,7 +12,7 @@ const HomeLayOut = ({
             <NavBar />
             <main className="flex h-contentHeight w-full">
                 <SideBar />
-                <div>
+                <div className="flex-1">
                     {children}
                 </div>
             </main>

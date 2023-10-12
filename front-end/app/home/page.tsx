@@ -4,7 +4,9 @@ import MainHome from "@/components/home/mainHome";
 
 const HomePage = () => {
     return (
-        <MainHome />
+        <div className="w-full">
+            <MainHome />
+        </div>
     )
 };
 

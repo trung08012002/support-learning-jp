@@ -1,5 +1,6 @@
 import React from "react"
 import { Example } from "./vocabularyTab";
+import MeaningVocabByLanguage, { ExampleByLanguage } from "./MeaningVocabByLanguage";
 export type FixedVocabularyModalBodyProps = {
     kanji: string,
     hiragana: string,
@@ -13,7 +14,7 @@ export type MeaningVocab = {
     title: string,
     meaning: MeaningByLanguage[],
     note: string[],
-    examples: Example[],
+    examples: ExampleByLanguage[],
 
 };
 
@@ -23,7 +24,8 @@ const FixedVocabularyModalBody = ({ kanji, hiragana, meaningsVocab }: FixedVocab
             <span className="text-2xl text-danger">{kanji}</span>
             <span className="text-2xl text-linkSecondary">{hiragana}</span>
             {
-                meaningsVocab.map((mean, index) =><)
+                meaningsVocab.map((mean, index) => <MeaningVocabByLanguage key={index} title={mean.title} meaning={mean.meaning}
+                    note={mean.note} examples={mean.examples} index={index + 1} />)
             }
         </div>
     )

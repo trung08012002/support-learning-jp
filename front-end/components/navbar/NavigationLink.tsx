@@ -15,13 +15,13 @@ const NavigationLink = ({ href, icon, name }: NavigationLinkProps) => {
     const isActive = pathname === href;
     // (href === "/home" ? "/" : href);
 
-
     return (
         <>
             <div
                 className={`relative
-                
+               
                 before:content-[attr(data-tip)]
+                before: z-20
 before:absolute
 before:px-3
 before:py-2
@@ -55,8 +55,17 @@ before:transition-all
                 data-tip={name}
             >
                 <Link href={href === "/home" ? "/" : href}>
-                    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon={name} role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"
-                        className={`h-6 w-6  ${isActive ? "fill-blue-500" : ""} hover:fill-blue-500`}>
+                    <svg
+                        aria-hidden="true"
+                        focusable="false"
+                        data-prefix="fas"
+                        data-icon={name}
+                        role="img"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 576 512"
+                        className={`h-6 w-6  ${isActive ? "fill-blue-500" : ""
+                            } hover:fill-blue-500`}
+                    >
                         {icon}
                     </svg>
                 </Link>
