@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from "react"
 import DrawingTool from "./drawtool";
 import { IconButtonProps } from "./searchInput";
@@ -11,7 +12,7 @@ type SearchActionButtonProps = {
 
 const SearchActionButton = (props: SearchActionButtonProps) => {
     const { index, iconButton } = props;
-    const { action, setAction } = useActionContext();
+    const { setAction } = useActionContext();
     const [isEven, setIsEven] = useState(true);
     const handleClick = () => {
         if (isEven) {

@@ -1,4 +1,7 @@
+
+import TanstackProvider from '@/components/providers/TanstackProvider'
 import '@styles/globals.css'
+
 
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
@@ -17,7 +20,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <TanstackProvider>
+        <body className={inter.className}>{children}</body>
+      </TanstackProvider>
     </html>
   )
 }

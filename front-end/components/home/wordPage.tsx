@@ -4,7 +4,6 @@ import React from "react"
 
 import { Tabs } from 'flowbite-react';
 ;
-import VocabularyTab, { Defination, Vocabulary } from "./vocabularyTab";
 import { CustomTabTheme } from "./mainHome";
 import { useSearchParams } from "next/navigation";
 

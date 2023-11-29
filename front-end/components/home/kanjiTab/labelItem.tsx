@@ -6,8 +6,8 @@ export type LabelItemProps = {
 const LabelItem = ({ title, value }: LabelItemProps) => {
     return (
         <div className="flex flex-col">
-            <span className="bg-grayBackground rounded">{title}</span>
-            <span className="text-blueText">{value}</span>
+            <span className="bg-grayBackground rounded ">{title}</span>
+            <span className="text-blueText mt-1 text-xl">{value}</span>
         </div>
     )
 };

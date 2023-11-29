@@ -3,17 +3,20 @@ import React from "react"
 type KanjiItemProps = {
     kanji: string,
     hanviet: string,
-    meaning: string[]
-    choosen: boolean
+    meaning: string
+    choosen: boolean,
+    onclick: () => void
 }
 
-const KanjiItem = ({ kanji, hanviet, meaning, choosen }: KanjiItemProps) => {
+const KanjiItem = ({ kanji, hanviet, meaning, choosen, onclick }: KanjiItemProps) => {
     return (
-        <div className={`border-2 ${choosen ? "border-borderChoosing" : "border-borderNomal"} hover:border-borderChoosing flex flex-col w-fit p-1`}>
-            <span className="text-base">{kanji}</span>
-            <span className="text-base">{hanviet}</span>
+        <button className={`border-2 ${choosen ? "border-borderChoosing" : "border-borderNomal"} hover:border-borderChoosing flex flex-col w-fit p-2 rounded-sm`} onClick={() => onclick()}>
+
+            <span className="text-xl">{kanji}</span>
+            <span className=" text-xl">{hanviet}</span>
             <span className="text-base">{meaning}</span>
-        </div>
+
+        </button>
     )
 };
 

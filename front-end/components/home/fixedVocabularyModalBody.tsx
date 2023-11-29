@@ -1,5 +1,4 @@
 import React from "react"
-import { Example } from "./vocabularyTab";
 import MeaningVocabByLanguage, { ExampleByLanguage } from "./MeaningVocabByLanguage";
 export type FixedVocabularyModalBodyProps = {
     kanji: string,

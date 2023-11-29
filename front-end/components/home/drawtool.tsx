@@ -1,3 +1,4 @@
+"use client"
 import React, { useLayoutEffect, useState } from 'react';
 
 
@@ -29,7 +30,7 @@ const DrawingTool = () => {
 
 
     return (
-        <div className='w-full relative '>
+        <div className='w-full relative z-50'>
             <canvas
                 id="canvas"
                 className='bg-table bg-[length:20px_20px] w-full '

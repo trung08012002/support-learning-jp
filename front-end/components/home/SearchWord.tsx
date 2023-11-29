@@ -1,3 +1,4 @@
+"use client"
 import React, { ReactNode, useState } from "react"
 import SearchInput from "./searchInput"
 
@@ -9,9 +10,12 @@ export enum Action {
     NDHA = "Nhận dạng hình ảnh",
     TK = "Tìm kiếm"
 }
+type SearchWordProps = {
+    textSearch: string,
+    setTextSearch: React.Dispatch<React.SetStateAction<string>>
+}
+const SearchWord = ({ textSearch, setTextSearch }: SearchWordProps) => {
 
-const SearchWord = () => {
-    const [textSearch, setTextSearch] = useState("");
     const { setAction } = useActionContext();
     function handleClick(action: string) {
         setAction(action);

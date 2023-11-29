@@ -1,12 +1,20 @@
 "use client"
-import React, { useContext, useEffect, useRef, useState } from "react"
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
 
 
 import { Tabs, TabsRef } from 'flowbite-react';
-import SearchInput from "./searchInput";
-import VocabularyTab, { Defination, Vocabulary } from "./vocabularyTab";
+
+import VocabularyTab from "./vocabularyTab";
 import SearchWord from "./SearchWord";
-import DrawingTool from "./drawtool";
+
+import { Vocabulary } from "types/word";
+import useWord from "hooks/useWord";
+import useGoogleTranSlate from "hooks/useGoogle";
+import useVocabulary from "hooks/useVocabulary";
+import useGetFirstWordOfSentence from "hooks/useGetFirstWordOfSentencce";
+import useKanji from "hooks/useKanji";
+import KanjiTab from "./kanjiTab/kanjiTab";
+;
 
 // create an array of objects with the id, trigger element (eg. button), and the content element
 export const CustomTabTheme = {
@@ -69,17 +77,21 @@ export const CustomTabTheme = {
 
 
 export type ActionContext = {
+    activeTab: 0 | 1 | 2 | 3,
     action: string,
-    setAction: React.Dispatch<React.SetStateAction<string>>
+    setAction: React.Dispatch<React.SetStateAction<string>>,
+    setCurrentWord: React.Dispatch<React.SetStateAction<Vocabulary | null>>
 }
 
 export const ActionContext = React.createContext<ActionContext>({
+    activeTab: 0,
     action: "",
-    setAction: () => { }
+    setAction: () => { },
+    setCurrentWord: () => { }
 });
 export const useActionContext = () => useContext(ActionContext);
 const MainHome = () => {
-    const [activeTab, setActiveTab] = useState<number>(0);
+    const [activeTab, setActiveTab] = useState<0 | 1 | 2 | 3>(0);
 
     const tabsRef = useRef<TabsRef>(null);
     const [action, setAction] = useState("");
@@ -89,12 +101,61 @@ const MainHome = () => {
         }
         , [activeTab])
     const [textSearch, setTextSearch] = useState("");
+    const [currentWord, setCurrentWord] = useState<Vocabulary | null>(null)
+    const [googleWord, setGoogleWord] = useState<string | null>(null)
+    const [tu, setTu] = useState<string | null>(null)
+    const recommendWord = useWord({ word: textSearch });
+
+    const translateWord = useGoogleTranSlate({ word: textSearch });
+    const { refetch } = useVocabulary(recommendWord.data?.[0]?.tu ?? "", recommendWord.data?.[0]?.hiragana ?? "");
+    const getFirstWordOfSentence = useGetFirstWordOfSentence({ word: textSearch })
+    const handleSubmitVocabulary = (): void => {
+        if (recommendWord.data == undefined || recommendWord.data.length == 0) {
+            Promise.all([
+                translateWord.refetch(),
+                getFirstWordOfSentence.refetch()
+            ]).then(([translateData, firstWordData]) => {
+                const googleWord = translateData.data ?? null;
+                const currentWord = firstWordData.data?.data ?? null;
+                setGoogleWord(googleWord)
+                setCurrentWord(currentWord)
+                setTu(textSearch)
+
+            });
+
+        }
+        else {
+            setGoogleWord(null);
+            setTu(textSearch)
+            refetch().then((data) => setCurrentWord(data.data?.data ?? null))
+        }
+    }
+    const kanji = useKanji({ kanji: tu ?? "" });
+    const handleSubmitKanji = () => {
+        setTu(textSearch)
+        kanji.refetch();
+    }
+    const handleSubmit = (activeTab: 0 | 1 | 2 | 3) => {
+        const cal = {
+            0: handleSubmitVocabulary,
+            1: handleSubmitKanji,
+            2: () => { },
+            3: () => { },
+        }
+
+        cal[activeTab]();
+    }
     return (
-        <div className="relative rounded overflow-hidden shadow-lg m-4 bg-slate-50 p-4  w-[60%]">
+        <div className="relative rounded overflow-hidden w-4/5  min-h-full  shadow-lg  bg-slate-50 p-4   ">
             <div className=" mt-2 absolute top-20  w-full mr-4 pr-4">
 
-                <ActionContext.Provider value={{ action, setAction }}>
-                    <SearchWord textSearch={textSearch} setTextSearch={setTextSearch} />
+                <ActionContext.Provider value={{ action, setAction, setCurrentWord, activeTab }}>
+                    <form onSubmit={(event) => {
+                        event.preventDefault()
+                        handleSubmit(activeTab)
+                    }}>
+                        <SearchWord textSearch={textSearch} setTextSearch={setTextSearch} />
+                    </form>
                 </ActionContext.Provider>
 
             </div>
@@ -104,7 +165,7 @@ const MainHome = () => {
                 theme={CustomTabTheme}
                 aria-label="Tabs with underline"
                 style="underline"
-                onActiveTabChange={(tab) => setActiveTab(tab)}
+                onActiveTabChange={(tab) => setActiveTab(tab as 0 | 1 | 2 | 3)}
             >
 
                 <Tabs.Item
@@ -112,7 +173,7 @@ const MainHome = () => {
                     onClick={() => tabsRef.current?.setActiveTab(0)}
                     title="Từ vựng"
                 >
-                    <VocabularyTab text={textSearch} />
+                    <VocabularyTab text={tu ?? ""} vocabulary={currentWord} googleWord={googleWord} recommendWord={recommendWord.data} />
 
                     {/* <AudioPlayer src="https://jpdictionary.com/upload/audios/64e5e1cb48c5e.mp3" icon={
                         <path data-v-61d984ab="" fill="black" d="M412.6 182c-10.28-8.334-25.41-6.867-33.75 3.402c-8.406 10.24-6.906 25.35 3.375 33.74C393.5 228.4 400 241.8 400 255.1c0 14.17-6.5 27.59-17.81 36.83c-10.28 8.396-11.78 23.5-3.375 33.74c4.719 5.806 11.62 8.802 18.56 8.802c5.344 0 10.75-1.779 15.19-5.399C435.1 311.5 448 284.6 448 255.1S435.1 200.4 412.6 182zM473.1 108.2c-10.22-8.334-25.34-6.898-33.78 3.34c-8.406 10.24-6.906 25.35 3.344 33.74C476.6 172.1 496 213.3 496 255.1s-19.44 82.1-53.31 110.7c-10.25 8.396-11.75 23.5-3.344 33.74c4.75 5.775 11.62 8.771 18.56 8.771c5.375 0 10.75-1.779 15.22-5.431C518.2 366.9 544 313 544 255.1S518.2 145 473.1 108.2zM534.4 33.4c-10.22-8.334-25.34-6.867-33.78 3.34c-8.406 10.24-6.906 25.35 3.344 33.74C559.9 116.3 592 183.9 592 255.1s-32.09 139.7-88.06 185.5c-10.25 8.396-11.75 23.5-3.344 33.74C505.3 481 512.2 484 519.2 484c5.375 0 10.75-1.779 15.22-5.431C601.5 423.6 640 342.5 640 255.1S601.5 88.34 534.4 33.4zM301.2 34.98c-11.5-5.181-25.01-3.076-34.43 5.29L131.8 160.1H48c-26.51 0-48 21.48-48 47.96v95.92c0 26.48 21.49 47.96 48 47.96h83.84l134.9 119.8C272.7 477 280.3 479.8 288 479.8c4.438 0 8.959-.9314 13.16-2.835C312.7 471.8 320 460.4 320 447.9V64.12C320 51.55 312.7 40.13 301.2 34.98z" ></path>
@@ -122,15 +183,7 @@ const MainHome = () => {
                     onClick={() => tabsRef.current?.setActiveTab(1)}
                     title="Hán tự"
                 >
-                    <p>
-                        This is
-                        <span className="font-medium text-gray-800 dark:text-white">
-                            Dashboard tab`&apos;`s associated content
-                        </span>
-                        .
-                        Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to
-                        control the content visibility and styling.
-                    </p>
+                    <KanjiTab text={tu ?? ""} kanjis={kanji.data ?? []} />
                 </Tabs.Item>
                 <Tabs.Item
                     onClick={() => tabsRef.current?.setActiveTab(2)}
@@ -163,7 +216,7 @@ const MainHome = () => {
                 </Tabs.Item>
 
             </Tabs.Group>
-        </div>
+        </div >
     )
 };
 

@@ -1,31 +1,44 @@
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
+import KanjiItem from "./KanjiItem"
+import KanjiMeaning from "./KanjiMeaning"
+import { Kanji } from "types/kanji"
 
-type AnalyzeKanji = {
-    name: string,
-    list: AnalyzeKanji[],
-}
 
-type KanjiProps = {
-    kanji: string,
-    onVocal: string[],
-    kunVocal: string[]
-    meaning: string[],
-    numberOfStroke: number,
-    svgImage: string,
-    favorite: boolean,
-    analyzeKanji: AnalyzeKanji,
-}
 
-type kanjiTabProps = {
-    kanjisElement: KanjiProps[]
+const KanjiTab = ({ text, kanjis }: { text: string, kanjis: Kanji[] }) => {
 
-}
+    const [kanjiActive, setKanjiActive] = useState(0);
+    const activeKanji = useMemo(() => kanjis[kanjiActive], [kanjis, kanjiActive])
+    const onClick = (id: string) => {
+        const index = kanjis.findIndex((kanji) => kanji.id === id)
 
-const KanjiTab = ({ text }: { text: string }) => {
-    const [kanjis, setKanjis] = useState<KanjiProps[]>()
+        setKanjiActive(index);
+    }
+  
     return (
-        <div className="flex flex-col">
-            <div><span>{kanjis?.length} kết quả của Hán tự <span>{text}</span></span></div>
+        <div className="flex flex-col ">
+            {
+                kanjis.length > 0 ? (
+                    <>
+                        <span>{kanjis?.length} kết quả của Hán tự <span>{text}</span></span>
+                        <div
+                            className="flex overflow-x-auto my-2 gap-1"
+                        >
+                            {
+                                kanjis.map((word, index) => <KanjiItem key={word.id}
+                                    kanji={word.tu} hanviet={word.hanviets.join("、")} meaning={word.hanTuMeanings.join("、")} choosen={kanjiActive == index}
+                                    onclick={() => {
+
+                                        onClick(word.id)
+                                    }}
+                                />)
+                            }
+                        </div>
+                        <KanjiMeaning word={activeKanji} />
+                    </>
+
+                ) : null
+            }
         </div>
     )
 };

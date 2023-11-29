@@ -1,3 +1,4 @@
+"use client"
 import NavBar from "@/components/navbar/navbar";
 import SideBar from "@/components/sidebar/sidebar";
 import React from "react"

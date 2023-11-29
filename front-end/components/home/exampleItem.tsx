@@ -1,5 +1,6 @@
 import React from "react"
-import { Example } from "./vocabularyTab";
+import { Example } from "types/word";
+
 
 const ExampleItem = ({ example }: { example: Example }) => {
     return (
