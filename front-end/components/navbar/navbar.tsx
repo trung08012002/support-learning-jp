@@ -5,6 +5,8 @@ import React, { ReactElement } from "react"
 import ButtonCustom from "./buttonCustom";
 import NavigationLink from "./NavigationLink";
 import { useRouter } from "next/navigation";
+import SigninButton from "../SignInButton/SignInButton";
+
 
 type ItemBarProp = {
     name: string,
@@ -14,7 +16,7 @@ type ItemBarProp = {
 }
 
 const NavBar = () => {
-
+    const router = useRouter()
     const itemsBar: ItemBarProp[] = [{
         name: "Home",
         icon: <path d="M575.8 255.5C575.8 273.5 560.8 287.6 543.8 287.6H511.8L512.5 447.7C512.5 450.5 512.3 453.1 512 455.8V472C512 494.1 494.1 512 472 512H456C454.9 512
@@ -60,8 +62,7 @@ const NavBar = () => {
 
         {
             name: 'mode',
-            icon: <ButtonCustom textColor={"text-white"} backgroundColor={"bg-blue-500"} backgroundColorHover={"bg-blue-700"} icon={undefined} text={"Đăng nhập"}
-                onClick={() => { }} />,
+            icon: <SigninButton />,
 
 
         },
@@ -70,7 +71,10 @@ const NavBar = () => {
     return (
         <nav className="h-navbarHeight w-full bg-white border-gray-200 dark:bg-gray-900">
             <div className="w-full flex flex-wrap items-center justify-between p-1">
-                <div className="flex items-center"> <button><Image width={56} height={56} src={"/images/navbar/logo.jpg"} alt="logo" className="" /></button></div>
+
+                <button onClick={() => { router.push('/home') }}>
+                    <img src={"/images/navbar/logo.jpg"} alt="logo" className="w-[130px] object-cover h-navbarHeight p-2" />
+                </button >
                 <div className="flex items-center gap-2">
                     <div className="flex items-center gap-5">
                         {

@@ -1,10 +1,11 @@
 import { getSentenceFromVoice } from "api/voice.api";
-import useVoice from "hooks/useVoice";
 import React, { useState, useRef } from "react";
 
-const mimeType: string = "audio/webm";
+interface Props {
+    setTextSearch: (value: string) => void
+}
 
-const AudioRecorder: React.FC = () => {
+const AudioRecorder = ({ setTextSearch }: Props) => {
     const [permission, setPermission] = useState<boolean>(false);
     const mediaRecorder = useRef<MediaRecorder | null>(null);
     const [recordingStatus, setRecordingStatus] = useState<string>("inactive");
@@ -60,18 +61,47 @@ const AudioRecorder: React.FC = () => {
             mediaRecorder.current.stop();
 
             mediaRecorder.current.onstop = () => {
+                let file = new File(audioChunk.current, "1.wav", {
+                    type: "audio/x-wav", lastModified: new Date().getTime()
+                });
+                const axios = require('axios');
+                const FormData = require('form-data');
+                let data = new FormData();
+                data.append('audio', file);
+                let config = {
+                    method: 'post',
+                    maxBodyLength: Infinity,
+                    url: 'https://aa2d-34-105-89-76.ngrok-free.app/audio-to-text',
+                    headers: {
+                        'Content-Type': "multipart/form-data; boundary=<calculated when request is sent>"
+                    },
+                    data: data
+                };
+                axios.request(config)
+                    .then((response: { data: { text: string; } | null; }) => {
+                        console.log(response)
+                        if (response.data != null) {
+                            const data = response.data as { text: string }
+                            setTextSearch((data.text))
+                        }
+                    })
+                    .catch((error: any) => {
+                        console.log(error);
+                    });
+                audioChunk.current = []
+                // let file = new File(audioChunk.current, "1.wav", {
+                //     type: "audio/x-wav", lastModified: new Date().getTime()
+                // });
 
-                const audioBlob: Blob = new Blob(audioChunk.current, { type: mimeType });
-                const fileOfBlob = new File([audioBlob], 'audio_file')
-                const formData = new FormData();
-
-                formData.append("audio_file", fileOfBlob);
-
-
-                getSentenceFromVoice(formData).then((sentence) => {
-
-                })
-                audioChunk.current = [];
+                // const FormData = require('form-data');
+                // let data = new FormData();
+                // data.append('audio', file);
+                // getSentenceFromVoice(data).then((res) => {
+                //     if (res.data != null) {
+                //         setTextSearch(res.data)
+                //     }
+                // })
+                // audioChunk.current = []
             };
         }
     };

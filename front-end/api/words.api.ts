@@ -1,3 +1,4 @@
+import useAxiosAuth from "hooks/useAxiosAuth";
 import { GoogleWord, Vocabulary, WordMeaning } from "types/word";
 import http from "utils/http";
 
@@ -34,3 +35,10 @@ export const translateWordByGoogle = (word: string) =>
       word: word,
     },
   });
+
+const useWordApi = () => {
+  const http = useAxiosAuth();
+  function createWord(word: Vocabulary) {
+    http.post<Vocabulary>("words", word);
+  }
+};

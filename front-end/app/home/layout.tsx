@@ -1,4 +1,5 @@
 "use client"
+import Chat from "@/components/Chat/Chat";
 import NavBar from "@/components/navbar/navbar";
 import SideBar from "@/components/sidebar/sidebar";
 import React from "react"
@@ -11,12 +12,13 @@ const HomeLayOut = ({
     return (
         <section className="h-screen ">
             <NavBar />
-            <main className="flex h-contentHeight w-full">
+            <main className="flex h-contentHeight w-full ">
                 <SideBar />
                 <div className="flex-1">
                     {children}
                 </div>
             </main>
+            <Chat />
         </section>
     )
 };

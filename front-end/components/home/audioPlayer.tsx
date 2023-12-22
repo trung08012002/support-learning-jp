@@ -13,7 +13,7 @@ const AudioPlayer = ({ src, icon }: AudioPlayerProps) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const playVideo = () => {
     if (audioRef.current) {
-
+      console.log(src)
       const timeNow = Date.now();
 
       const duration = audioRef.current?.duration || 0;
@@ -24,10 +24,7 @@ const AudioPlayer = ({ src, icon }: AudioPlayerProps) => {
       }
     }
   }
-  useEffect(() => {
 
-
-  }, [])
   return (
     <div>
       <audio src={src} ref={audioRef}></audio>

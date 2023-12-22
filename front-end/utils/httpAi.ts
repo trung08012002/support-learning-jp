@@ -4,11 +4,8 @@ class HttpAi {
   instance: AxiosInstance;
   constructor() {
     this.instance = axios.create({
-      baseURL: "https://5200-34-87-2-238.ngrok-free.app",
+      baseURL: "https://aa2d-34-105-89-76.ngrok-free.app",
       timeout: 10000,
-      headers: {
-        "Content-Type": "application/json",
-      },
     });
   }
 }

@@ -120,7 +120,6 @@ const MainHome = () => {
                 setGoogleWord(googleWord)
                 setCurrentWord(currentWord)
                 setTu(textSearch)
-
             });
 
         }

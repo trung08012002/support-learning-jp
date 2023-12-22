@@ -103,7 +103,7 @@ const SearchInput = ({ textSearch, setTextSearch, listIconButton }: SearchInputP
             </div> : null}
             {action === Action.NDGN ? <div className={`absolute h-[10rem]  w-full top-14 right-0 block bg-white z-10 transition-opacity ${action === Action.NDGN ? "opacity-100" : "opacity-0"}`}>
                 <div className=" h-full flex items-center justify-center">
-                    <AudioVoiceRecorder />
+                    <AudioVoiceRecorder setTextSearch={setTextSearch} />
                 </div>
             </div> : null}
         </div>

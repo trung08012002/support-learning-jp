@@ -1,8 +1,12 @@
 import axios, { AxiosInstance } from "axios";
+import useEffect from "react";
 
 class Http {
   instance: AxiosInstance;
+
+  private refreshTokenRequest: Promise<string> | null;
   constructor() {
+    this.refreshTokenRequest = null;
     this.instance = axios.create({
       baseURL: "http://localhost:8080/api",
       timeout: 10000,
@@ -10,6 +14,12 @@ class Http {
         "Content-Type": "application/json",
       },
     });
+  }
+  getRefreshTokenRequest(): Promise<string> | null {
+    return this.refreshTokenRequest;
+  }
+  setRefreshTokenRequest(request: Promise<string> | null) {
+    this.refreshTokenRequest = request;
   }
 }
 
