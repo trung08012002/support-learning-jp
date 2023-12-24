@@ -11,7 +11,7 @@ const SigninButton = () => {
     if (session && session.user) {
         return (
             <div className="flex gap-4 ml-auto">
-                <p className="text-sky-600">{session.user.name}</p>
+                <p className="text-sky-600">{session.user?.email}</p>
                 <ButtonCustom textColor={"text-white"} backgroundColor={"bg-blue-500"} backgroundColorHover={"bg-blue-700"} icon={undefined} text={"Đăng xuất"}
                     onClick={() => { router.push("/login") }} />
             </div>

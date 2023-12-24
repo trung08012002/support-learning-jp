@@ -36,9 +36,10 @@ export const translateWordByGoogle = (word: string) =>
     },
   });
 
-const useWordApi = () => {
+export const useWordApi = () => {
   const http = useAxiosAuth();
   function createWord(word: Vocabulary) {
-    http.post<Vocabulary>("words", word);
+    return http.post<Vocabulary>("words", word);
   }
+  return { createWord };
 };
