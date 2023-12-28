@@ -8,7 +8,7 @@ class Http {
   constructor() {
     this.refreshTokenRequest = null;
     this.instance = axios.create({
-      baseURL: "http://localhost:8080/api",
+      baseURL: "http://3.83.172.113/api",
       timeout: 10000,
       headers: {
         "Content-Type": "application/json",

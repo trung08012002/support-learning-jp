@@ -6,6 +6,7 @@ import FixedTranslation from "./fixedTranslation";
 import { Vocabulary, WordMeaning } from "types/word";
 import RecommendWord from "./RecommendWord";
 import ButtonToOtherWebsite from "./buttonToOtherWebsite";
+import GoogleWord from "./googleWord";
 
 
 
@@ -29,11 +30,6 @@ const VocabularyTab = ({ text, vocabulary, recommendWord, googleWord }: { google
               </div>
               : null
           }
-
-          {googleWord && <div className="border border-blue-300 px-1 pt-3 pb-6 rounded-sm w-full flex flex-col">
-            <div >{text}</div>
-            <div>{googleWord}</div>
-          </div>}
           {
             vocabulary != null ? (
               <>

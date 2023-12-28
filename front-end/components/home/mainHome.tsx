@@ -14,6 +14,7 @@ import useVocabulary from "hooks/useVocabulary";
 import useGetFirstWordOfSentence from "hooks/useGetFirstWordOfSentencce";
 import useKanji from "hooks/useKanji";
 import KanjiTab from "./kanjiTab/kanjiTab";
+import GoogleWord from "./googleWord";
 ;
 
 // create an array of objects with the id, trigger element (eg. button), and the content element
@@ -203,15 +204,8 @@ const MainHome = () => {
                     title="Dịch"
 
                 >
-                    <p>
-                        This is
-                        <span className="font-medium text-gray-800 dark:text-white">
-                            Contacts tab`&apos;`s associated content
-                        </span>
-                        .
-                        Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to
-                        control the content visibility and styling.
-                    </p>
+                    {googleWord && <GoogleWord text={tu || ""} googleWord={googleWord} />
+                    }
                 </Tabs.Item>
 
             </Tabs.Group>
