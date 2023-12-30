@@ -92,7 +92,7 @@ export const ActionContext = React.createContext<ActionContext>({
 });
 export const useActionContext = () => useContext(ActionContext);
 const MainHome = () => {
-    const [activeTab, setActiveTab] = useState<0 | 1 | 2 | 3>(0);
+    const [activeTab, setActiveTab] = useState<0 | 1 | 2>(0);
 
     const tabsRef = useRef<TabsRef>(null);
     const [action, setAction] = useState("");
@@ -110,6 +110,10 @@ const MainHome = () => {
     const translateWord = useGoogleTranSlate({ word: textSearch });
     const { refetch } = useVocabulary(recommendWord.data?.[0]?.tu ?? "", recommendWord.data?.[0]?.hiragana ?? "");
     const getFirstWordOfSentence = useGetFirstWordOfSentence({ word: textSearch })
+    const handleSubmitGoogle = async () => {
+        const translateData = await translateWord.refetch()
+        setGoogleWord(translateData.data ?? null)
+    }
     const handleSubmitVocabulary = (): void => {
         if (recommendWord.data == undefined || recommendWord.data.length == 0) {
             Promise.all([
@@ -122,7 +126,6 @@ const MainHome = () => {
                 setCurrentWord(currentWord)
                 setTu(textSearch)
             });
-
         }
         else {
             setGoogleWord(null);
@@ -135,12 +138,12 @@ const MainHome = () => {
         setTu(textSearch)
         kanji.refetch();
     }
-    const handleSubmit = (activeTab: 0 | 1 | 2 | 3) => {
+    const handleSubmit = (activeTab: 0 | 1 | 2) => {
         const cal = {
             0: handleSubmitVocabulary,
             1: handleSubmitKanji,
-            2: () => { },
-            3: () => { },
+            2: handleSubmitGoogle,
+
         }
 
         cal[activeTab]();
@@ -165,7 +168,7 @@ const MainHome = () => {
                 theme={CustomTabTheme}
                 aria-label="Tabs with underline"
                 style="underline"
-                onActiveTabChange={(tab) => setActiveTab(tab as 0 | 1 | 2 | 3)}
+                onActiveTabChange={(tab) => setActiveTab(tab as 0 | 1 | 2)}
             >
 
                 <Tabs.Item
@@ -185,22 +188,9 @@ const MainHome = () => {
                 >
                     <KanjiTab text={tu ?? ""} kanjis={kanji.data ?? []} />
                 </Tabs.Item>
+
                 <Tabs.Item
                     onClick={() => tabsRef.current?.setActiveTab(2)}
-                    title="Ngữ pháp"
-                >
-                    <p>
-                        This is
-                        <span className="font-medium text-gray-800 dark:text-white">
-                            Settings tab`&apos;`s associated content
-                        </span>
-                        .
-                        Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to
-                        control the content visibility and styling.
-                    </p>
-                </Tabs.Item>
-                <Tabs.Item
-                    onClick={() => tabsRef.current?.setActiveTab(3)}
                     title="Dịch"
 
                 >
