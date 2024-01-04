@@ -71,7 +71,7 @@ const AudioRecorder = ({ setTextSearch }: Props) => {
                 let config = {
                     method: 'post',
                     maxBodyLength: Infinity,
-                    url: 'https://0e4d-35-225-8-205.ngrok-free.app/audio-to-text',
+                    url: 'https://ed98-34-42-45-124.ngrok-free.app/audio-to-text',
                     headers: {
                         'Content-Type': "multipart/form-data; boundary=<calculated when request is sent>"
                     },
